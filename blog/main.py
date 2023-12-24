@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from . import schemas, models
 from .database import engine, SessionLocal
+from .hashing import Hash
 
 
 app = FastAPI()
@@ -83,7 +84,7 @@ async def create_user(request: schemas.User, db: Session = Depends(get_db)):
     new_user = models.User(
         name=request.name,
         email=request.email,
-        password=request.password,
+        password=Hash.bcrypt(request.password),
     )
     db.add(new_user)
     db.commit()
