@@ -57,13 +57,13 @@ async def update(id, request: schemas.Blog, db: Session = Depends(get_db)):
     return "updated"
 
 
-@app.get("/blog")
+@app.get("/blog", response_model=list[schemas.ShowBlog])
 async def all(db: Session = Depends(get_db)):
     blogs = db.query(models.Blog).all()
     return blogs
 
 
-@app.get("/blog/{id}", status_code=status.HTTP_200_OK)
+@app.get("/blog/{id}", status_code=status.HTTP_200_OK, response_model=schemas.ShowBlog)
 async def show(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
