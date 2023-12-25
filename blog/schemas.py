@@ -5,13 +5,8 @@ class Blog(BaseModel):
     title: str
     body: str
 
-
-class ShowBlog(BaseModel):
-    title: str
-    body: str
-
-    class Config:
-        from_attributes = True
+    # class Config:
+    #     from_attributes = True
 
 
 class User(BaseModel):
@@ -23,6 +18,16 @@ class User(BaseModel):
 class ShowUser(BaseModel):
     name: str
     email: str
+    blogs: list[Blog]
 
-    class Config:
-        from_attributes = True
+    # class Config:
+    #     from_attributes = True
+
+
+class ShowBlog(BaseModel):
+    title: str
+    body: str
+    creator: ShowUser
+
+    # class Config:
+    #     from_attributes = True
