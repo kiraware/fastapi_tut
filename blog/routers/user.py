@@ -5,14 +5,16 @@ from ..hashing import Hash
 from .. import schemas, models
 
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/user",
+    tags=["Users"],
+)
 
 
 @router.post(
-    "/user",
+    "/",
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.ShowUser,
-    tags=["users"],
 )
 async def create_user(request: schemas.User, db: Session = Depends(get_db)):
     new_user = models.User(
@@ -27,10 +29,9 @@ async def create_user(request: schemas.User, db: Session = Depends(get_db)):
 
 
 @router.get(
-    "/user/{id}",
+    "/{id}",
     status_code=status.HTTP_200_OK,
     response_model=schemas.ShowUser,
-    tags=["users"],
 )
 async def get_user(id: int, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.id == id).first()
