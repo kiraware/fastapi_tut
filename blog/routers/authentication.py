@@ -10,21 +10,21 @@ from .. import schemas, models
 router = APIRouter(tags=["Authentication"])
 
 
-@router.post("/login")
+@router.post("/login", response_model=schemas.Token)
 def login(request: schemas.Login, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == request.username).first()
 
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Invalid Credentials",
+            detail="Invalid Credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
     if not Hash.verify(request.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Incorrect password",
+            detail="Incorrect password",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
