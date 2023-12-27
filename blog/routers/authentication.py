@@ -1,9 +1,11 @@
+from typing import Annotated
 from datetime import timedelta
-from ..token import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi.security import OAuth2PasswordRequestFormStrict
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..hashing import Hash
+from ..token import ACCESS_TOKEN_EXPIRE_MINUTES, create_access_token
 from .. import schemas, models
 
 
@@ -11,7 +13,10 @@ router = APIRouter(tags=["Authentication"])
 
 
 @router.post("/login", response_model=schemas.Token)
-def login(request: schemas.Login, db: Session = Depends(get_db)):
+async def login(
+    request: Annotated[OAuth2PasswordRequestFormStrict, Depends()],
+    db: Annotated[Session, Depends(get_db)],
+):
     user = db.query(models.User).filter(models.User.email == request.username).first()
 
     if not user:
